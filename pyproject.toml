@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reverse-api-collector"
+version = "0.1.0"
+description = "Plugin-oriented scaffold for authenticated web API data collection"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Proprietary" }
+authors = [{ name = "Internal Data Team" }]
+dependencies = []
+
+[project.optional-dependencies]
+http = ["httpx>=0.27,<1"]
+browser = ["playwright>=1.48,<2"]
+cloak = ["cloakbrowser>=0.4"]
+excel = ["openpyxl>=3.1,<4"]
+yaml = ["PyYAML>=6,<7"]
+dev = ["pytest>=8,<9", "pytest-asyncio>=0.24,<1", "ruff>=0.9,<1"]
+all = [
+  "httpx>=0.27,<1",
+  "playwright>=1.48,<2",
+  "openpyxl>=3.1,<4",
+  "PyYAML>=6,<7",
+]
+
+[project.scripts]
+reverse-collector = "reverse_collector.cli:main"
+
+[project.entry-points."reverse_collector.plugins"]
+demo = "reverse_collector.plugins.demo:DemoPlugin"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+

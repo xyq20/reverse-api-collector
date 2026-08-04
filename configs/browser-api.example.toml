@@ -1,0 +1,55 @@
+[task]
+name = "platform_daily_dataset"
+plugin = "plugins.platform.plugin:PlatformPlugin"
+dataset = "daily_dataset"
+
+[task.parameters]
+account = "shop_a"
+date = "2026-08-03"
+schema_version = "1"
+api_url = "https://platform.example/api/data"
+
+[transport]
+mode = "auto"
+order = ["http", "browser_fetch"]
+timeout = 30
+remember_successful_transport = true
+
+[transport.headers]
+accept = "application/json"
+x-api-token = "${PLATFORM_API_TOKEN:-}"
+
+[browser]
+engine = "playwright"
+user_data_dir = "profiles/platform/shop_a"
+start_url = "https://platform.example/data"
+login_url = "https://platform.example/login"
+headless = false
+pause_for_login = false
+
+[retry]
+attempts = 3
+base_delay = 1
+max_delay = 30
+jitter = 0.2
+
+[pipeline]
+required_fields = ["id", "date"]
+dedupe_keys = ["id", "date"]
+on_missing = "error"
+
+[checkpoint]
+enabled = true
+directory = "checkpoints/platform"
+resume = true
+
+[[outputs]]
+type = "jsonl"
+path = "output/platform/{date}.jsonl"
+
+[[outputs]]
+type = "sqlite"
+path = "output/platform/platform.db"
+table = "daily_dataset"
+key_fields = ["id", "date"]
+
